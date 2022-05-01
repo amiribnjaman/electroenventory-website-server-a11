@@ -20,10 +20,22 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         await client.connect()
         const inventoryCollection = client.db('electronicsInventory').collection('inventories')
 
+        // Insert api
         app.post('/inventory', async (req, res) => {
             const data = req.body
             console.log(data);
             const result = await inventoryCollection.insertOne(data)
+            res.send(result)
+        })
+
+        // Get first 6 items
+        app.get('/inventoryItem', async (req, res) => {
+            const query = req.query
+            const sort = { length: -1 }
+            const limit = 6
+            const cursor = inventoryCollection.find(query).sort(sort).limit(limit)
+            const result = await cursor.toArray()
+
             res.send(result)
         })
     }
@@ -31,6 +43,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
     }
 })().catch(console.dir)
+
 
 // {
 //  "name":"iphone",
