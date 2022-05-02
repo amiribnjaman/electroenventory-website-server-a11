@@ -39,11 +39,30 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             res.send(result)
         })
 
+        // Get a specific item details
         app.get('/inventory/:id', async (req,res) => {
             const id = req.params
             const query = {_id: ObjectId(id)}
             const result = await inventoryCollection.findOne(query)
 
+            res.send(result)
+        })
+
+
+        // Delivered or derecase quantity from a single item
+        app.put('/inventory/:id/:quantity', async (req, res) => {
+            const id = req.params.id
+            const quantity = +req.params.quantity
+            const newQuantity = String(quantity - 1)
+            const filter = {_id: ObjectId(id)}
+            const options = { upsert: true };
+            const updateDocument = {
+                $set : {
+                    quantity: `${newQuantity}`
+                }
+            }
+
+            const result = await inventoryCollection.updateOne(filter, updateDocument, options)
             res.send(result)
         })
     }
