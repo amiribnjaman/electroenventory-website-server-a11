@@ -28,6 +28,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             res.send(result)
         })
 
+        // Get all inventory items
+        app.get('/allInventory', async (req, res) => {
+            const query = req.query
+            const cursor = inventoryCollection.find(query)
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
         // Get first 6 items
         app.get('/inventoryItems', async (req, res) => {
             const query = req.query
@@ -40,29 +48,28 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         })
 
         // Get a specific item details
-        app.get('/inventory/:id', async (req,res) => {
+        app.get('/inventory/:id', async (req, res) => {
             const id = req.params
-            const query = {_id: ObjectId(id)}
+            const query = { _id: ObjectId(id) }
             const result = await inventoryCollection.findOne(query)
 
             res.send(result)
         })
 
-
         // Delivered or derecase quantity from a single item
         app.put('/inventory/:id/:quantity', async (req, res) => {
             const id = req.params.id
-            const quantity = +req.params.quantity
-            const newQuantity = String(quantity - 1)
-            const filter = {_id: ObjectId(id)}
+            const quantity = req.params.quantity
+            const filter = { _id: ObjectId(id) }
             const options = { upsert: true };
+
             const updateDocument = {
-                $set : {
-                    quantity: `${newQuantity}`
+                $set: {
+                    quantity: `${quantity}`
                 }
             }
-
             const result = await inventoryCollection.updateOne(filter, updateDocument, options)
+            
             res.send(result)
         })
     }
