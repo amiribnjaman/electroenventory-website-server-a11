@@ -10,7 +10,7 @@ app.use(express.json())
 
 
 // Mongodb connection
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.urqpl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -20,7 +20,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         await client.connect()
         const inventoryCollection = client.db('electronicsInventory').collection('inventories')
 
-        // Insert api
+        // Insert a single item
         app.post('/inventory', async (req, res) => {
             const data = req.body
             console.log(data);
@@ -29,12 +29,20 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         })
 
         // Get first 6 items
-        app.get('/inventoryItem', async (req, res) => {
+        app.get('/inventoryItems', async (req, res) => {
             const query = req.query
             const sort = { length: -1 }
             const limit = 6
             const cursor = inventoryCollection.find(query).sort(sort).limit(limit)
             const result = await cursor.toArray()
+
+            res.send(result)
+        })
+
+        app.get('/inventory/:id', async (req,res) => {
+            const id = req.params
+            const query = {_id: ObjectId(id)}
+            const result = await inventoryCollection.findOne(query)
 
             res.send(result)
         })
@@ -55,20 +63,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 // }
 
 
-
-
-
-
-
-
-
 app.get('/', (req, res) => {
     res.send('Server ok')
 })
 
 
-
-
 app.listen(port, () => {
     console.log('Server running on port', port);
 })
+
