@@ -3,6 +3,7 @@ const app = express()
 const port = process.env.PORT || 4000
 const cors = require('cors')
 require('dotenv').config()
+const jwt = require('jsonwebtoken');
 
 // Middlewares
 app.use(cors())
@@ -19,6 +20,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
     try {
         await client.connect()
         const inventoryCollection = client.db('electronicsInventory').collection('inventories')
+
+
+        // app.post('/login', (req, res) => {
+        //     const email = req.body
+        //     console.log(email)
+        // })
 
         // Insert a single item
         app.post('/inventory', async (req, res) => {
@@ -69,9 +76,19 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
                 }
             }
             const result = await inventoryCollection.updateOne(filter, updateDocument, options)
-            
+
             res.send(result)
         })
+
+
+        // Delete a single element from database
+        app.delete('/inventory/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: ObjectId(id) }
+            const result = await inventoryCollection.deleteOne(filter)
+            res.send(result)
+        })
+
     }
     finally {
 
