@@ -89,6 +89,15 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             res.send(result)
         })
 
+        // Getting all value for a specific user by user id - uid
+        app.get('/myItems/:uid', async (req, res) => {
+            const uid = req.params.uid
+            const filter = { uid: admin_id }
+            const cursor = inventoryCollection.find(filter)
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
     }
     finally {
 
