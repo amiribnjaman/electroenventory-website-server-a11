@@ -22,10 +22,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         const inventoryCollection = client.db('electronicsInventory').collection('inventories')
 
 
-        // app.post('/login', (req, res) => {
-        //     const email = req.body
-        //     console.log(email)
-        // })
+        // JWT token generator
+        app.post('/login', (req, res) => {
+            const email = req.body
+            const token = jwt.sign(email, process.env.SECRET_KEY);
+        res.send({token})
+        })
 
         // Insert a single item
         app.post('/inventory', async (req, res) => {
@@ -76,12 +78,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
                 }
             }
             const result = await inventoryCollection.updateOne(filter, updateDocument, options)
-
             res.send(result)
         })
 
 
-        // Delete a single element from database
+        // Delete a single item from database
         app.delete('/inventory/:id', async (req, res) => {
             const id = req.params.id
             const filter = { _id: ObjectId(id) }
@@ -89,10 +90,10 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             res.send(result)
         })
 
-        // Getting all value for a specific user by user id - uid
+        // Getting my items or loggedin user's items by user id - uid
         app.get('/myItems/:uid', async (req, res) => {
             const uid = req.params.uid
-            const filter = { uid: admin_id }
+            const filter = { admin_id: uid }
             const cursor = inventoryCollection.find(filter)
             const result = await cursor.toArray()
             res.send(result)
@@ -105,21 +106,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 })().catch(console.dir)
 
 
-// {
-//  "name":"iphone",
-//  "image":"https://i.ibb.co/KsBY2Q2/trainer2.jpg",
-//   "desc":"this is description",
-//   "price":"200",
-//   "quentity":"2",
-//   "spplier_name":"zihad"
-// }
-
-
 app.get('/', (req, res) => {
     res.send('Server ok')
 })
 
 
+// PORT
 app.listen(port, () => {
     console.log('Server running on port', port);
 })
