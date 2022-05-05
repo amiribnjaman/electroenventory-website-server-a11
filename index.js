@@ -26,7 +26,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         app.post('/login', (req, res) => {
             const email = req.body
             const token = jwt.sign(email, process.env.SECRET_KEY);
-        res.send({token})
+            res.send({ token })
         })
 
         // Insert a single item
@@ -93,10 +93,18 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         // Getting my items or loggedin user's items by user id - uid
         app.get('/myItems/:uid', async (req, res) => {
             const uid = req.params.uid
-            const filter = { admin_id: uid }
-            const cursor = inventoryCollection.find(filter)
-            const result = await cursor.toArray()
-            res.send(result)
+            const token = req.headers.authorization
+            const [accessToken, email] = token.split(' ')
+            const verifiedToken = verifyAccessToken(accessToken)
+            if (verifiedToken.email === email) {
+                const filter = { admin_id: uid }
+                const cursor = inventoryCollection.find(filter)
+                const result = await cursor.toArray()
+                res.send({ result: result, code: verifiedToken.errCode })
+            } else {
+                res.send({ message: 'Token dosen\'t valid', code: verifiedToken.errCode })
+            }
+
         })
 
     }
@@ -116,3 +124,18 @@ app.listen(port, () => {
     console.log('Server running on port', port);
 })
 
+
+// Verify access token function
+const verifyAccessToken = (accessToken) => {
+    let email;
+    jwt.verify(accessToken, process.env.SECRET_KEY, function (err, decoded) {
+        if (decoded) {
+            email = { email: decoded.email, errCode: 401 }
+        }
+        if (err) {
+            email = { err: 'Not found', errCode: 403 }
+        }
+    });
+
+    return email;
+}
