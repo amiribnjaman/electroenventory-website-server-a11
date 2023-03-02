@@ -43,6 +43,10 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         await client.connect()
         const inventoryCollection = client.db('electronicsInventory').collection('inventories')
 
+        
+app.get('/', (req, res) => {
+    res.send('Server ok')
+})
 
         // JWT token generator
         app.post('/login', (req, res) => {
@@ -136,9 +140,6 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 })().catch(console.dir)
 
 
-app.get('/', (req, res) => {
-    res.send('Server ok')
-})
 
 
 // Listening
