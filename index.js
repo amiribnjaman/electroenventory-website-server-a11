@@ -6,7 +6,7 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken');
 
 // Middlewares
-// app.use(cors())
+app.use(cors())
 app.use(express.json())
 
 // Middleware for cors issue
@@ -15,19 +15,19 @@ app.use(express.json())
 //     next();
 //   }) 
 
-const corsCon = {
-    origin: '*',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
-app.use(cors(corsCon))
-app.options("*", cors(corsCon))
+// const corsCon = {
+//     origin: '*',
+//     credentials: true,
+//     methods: ['GET', 'POST', 'PUT', 'DELETE']
+// }
+// app.use(cors(corsCon))
+// app.options("*", cors(corsCon))
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Orgin", "*")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization")
-    next()
-})
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Orgin", "*")
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization")
+//     next()
+// })
 
 // app.use(cors(corsOptions)) 
 
