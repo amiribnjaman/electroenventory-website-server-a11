@@ -59,7 +59,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         })
 
         // Get all inventory items
-        app.get('/allInventory', async (req, res) => {
+        app.get('/api/allInventory', async (req, res) => {
             const query = req.query
             const cursor = inventoryCollection.find(query)
             const result = await cursor.toArray()
