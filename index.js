@@ -6,7 +6,7 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken');
 
 // Middlewares
-app.use(cors())
+// app.use(cors())
 app.use(express.json())
 
 // Middleware for cors issue
