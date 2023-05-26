@@ -45,8 +45,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         client.connect()
         const inventoryCollection = client.db('electronicsInventory').collection('inventories')
 
-        app.get('/', (req, res) => {
-            res.send('Server ok')
+        app.get('/', async (req, res) => {
+            await res.send('Server ok')
         })
 
         // JWT token generator
