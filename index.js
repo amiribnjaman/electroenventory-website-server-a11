@@ -78,7 +78,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             const sort = { length: -1 }
             const limit = 6
             const cursor = inventoryCollection.find(query).sort(sort).limit(limit)
-            const result = await cursor.toArray()
+            const result = cursor.toArray()
 
             res.send(result)
         })
