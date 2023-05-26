@@ -142,8 +142,6 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 
 
-
-
 // Listening
 app.listen(port, () => {
     console.log('Server running on port', port);
