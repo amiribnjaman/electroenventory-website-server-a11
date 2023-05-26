@@ -42,7 +42,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 // mongo run function
 (async () => {
     try {
-        await client.connect()
+        client.connect()
         const inventoryCollection = client.db('electronicsInventory').collection('inventories')
 
         app.get('/', (req, res) => {
