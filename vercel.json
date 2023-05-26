@@ -3,14 +3,14 @@
     "name": "electro-inventory",
     "builds": [
         {
-            "src": "*.js",
+            "src": "./index.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/"
+            "dest": "./index.js"
         }
     ]
 }
